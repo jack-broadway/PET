@@ -143,8 +143,7 @@ export default {
         temp_trans.categoryId = this.categorized_transactions[rowNum]
         transactions.push(temp_trans)
       }
-      console.log(transactions)
-      // this.$store.dispatch('finaliseImportedTransactions', transactions)
+      this.$store.dispatch('finaliseImportedTransactions', transactions)
     },
     categorizeTransactions: async function() {
       console.log('Categorizing Transactions')

@@ -1,9 +1,5 @@
 import controllers from '../../data/controllers'
-
-const SET_TRANSACTIONS = 'SET_TRANSACTIONS'
-const SET_CHECKEDTRANSACTIONS = 'SET_CHECKEDTRANSACTIONS'
-const SET_ALLCHECKED = 'SET_ALLCHECKED'
-const SET_ISREFRESHING = 'SET_ISREFRESHING'
+import mutators from '../mutators'
 
 const state = {
   imported_transactions: [],
@@ -13,36 +9,44 @@ const state = {
 }
 
 const mutations = {
-  [SET_TRANSACTIONS] (state, data) {
+  [mutators.IMPORTTRANS_SET_TRANSACTIONS] (state, data) {
     state.imported_transactions = data
   },
-  [SET_CHECKEDTRANSACTIONS] (state, data) {
+  [mutators.IMPORTTRANS_SET_CHECKEDTRANSACTIONS] (state, data) {
     state.checked_transactions = data
   },
-  [SET_ALLCHECKED] (state, data) {
+  [mutators.IMPORTTRANS_SET_ALLCHECKED] (state, data) {
     state.allChecked = data
   },
-  [SET_ISREFRESHING] (state, data) {
+  [mutators.IMPORTTRANS_SET_ISREFRESHING] (state, data) {
     state.isRefreshing = data
   }
 }
 
 const actions = {
   refreshImportedTransactions ({ commit }) {
-    commit(SET_ISREFRESHING, true)
+    commit(mutators.IMPORTTRANS_SET_ISREFRESHING, true)
     return controllers.imported_transaction.getAllTransactions().then((data) => {
-      commit(SET_TRANSACTIONS, data)
-      commit(SET_ISREFRESHING, false)
+      commit(mutators.IMPORTTRANS_SET_TRANSACTIONS, data)
+      commit(mutators.IMPORTTRANS_SET_ISREFRESHING, false)
     })
   },
   setCheckedImportedTransaction ({ commit }, payload) {
-    commit(SET_CHECKEDTRANSACTIONS, payload)
+    commit(mutators.IMPORTTRANS_SET_CHECKEDTRANSACTIONS, payload)
   },
   setAllChecked ({ commit }, payload) {
-    commit(SET_ALLCHECKED, payload)
+    commit(mutators.IMPORTTRANS_SET_ALLCHECKED, payload)
   },
   setIsRefreshing ({ commit }, payload) {
-    commit(SET_ISREFRESHING, payload)
+    commit(mutators.IMPORTTRANS_SET_ISREFRESHING, payload)
+  },
+  async finaliseImportedTransactions ({ dispatch }, payload) {
+    for (let index in payload) {
+      await controllers.transaction.addTransaction(payload[index])
+    }
+    await dispatch('deleteSelectedTransactions')
+    dispatch('refreshImportedTransactions')
+    dispatch('refreshTransactions')
   },
   async deleteSelectedTransactions ({ state, dispatch }) {
     if (state.allChecked) {

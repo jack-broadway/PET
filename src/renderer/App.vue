@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <pet-navbar/>
-    <main>
+    <main class="mt-3">
       <router-view></router-view>
     </main>
   </div>

@@ -5,6 +5,14 @@ let methods = {}
 methods.addTransaction = (transaction) => {
   return db.transactions.put(transaction)
 }
-methods.getAllTransactions = () => {
-  return db.transactions.toArray()
+methods.getAllTransactions = async () => {
+  const allTransactions = await db.transactions.toArray()
+
+  await allTransactions.map(async transaction => {
+    transaction.category = (await db.categories.get(transaction.categoryId)).name
+  })
+
+  return allTransactions
 }
+
+export default methods

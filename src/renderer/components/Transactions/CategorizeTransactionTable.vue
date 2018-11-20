@@ -2,11 +2,15 @@
   <b-container fluid class="mt-2">
     <b-row>
       <b-col md="auto">
-        <h2>Categorize Transactions</h2>
+        <b-pagination v-model="currentPage" :total-rows="imported_transactions.length"/>
+      </b-col>
+      <b-col md="auto">
+        <b-form-select :options="[10,15,20,50,100]" v-model="perPage" />
       </b-col>
       <b-col md="auto" class="ml-auto my-1 ">
         <div class="float-right">
-          <b-button  variant="dark" class="mr-1">Finalise ({{ checked_transactions.length }})</b-button>
+          <b-button variant="dark" class="mr-1" @click.prevent="categorizeTransactions">Auto Categorize</b-button>
+          <b-button variant="dark" class="mr-1" @click.prevent="finaliseSelected">Finalise ({{ checked_transactions.length }})</b-button>
           <b-dropdown right :text="`Actions (${checked_transactions.length })`" variant="primary">
             <b-dropdown-item >Merge Transactions</b-dropdown-item>
             <b-dropdown-item @click.prevent="deleteSelected">Delete</b-dropdown-item>
@@ -16,13 +20,13 @@
     </b-row>  
     <b-table show-empty striped class="mt-2" 
       :items="imported_transactions" :fields="fields" :sort-compare="sortCompare"
-      per-page=20 :current-page="currentPage">
+      :per-page="perPage" :current-page="currentPage">
       <template slot="HEAD_checkbox" slot-scope="row">
         <b-form-checkbox @click.native.stop @change="toggleAllSelected" v-model="allSelected" 
           class="table-header-checkbox"/>
       </template>
       <template slot="checkbox" slot-scope="row">
-        <b-form-checkbox @click.native.stop  :key="row.item.id" :value="row.item.id" 
+        <b-form-checkbox @click.native.stop  :key="row.index" :value="row.index" 
           v-model="checked_transactions" class="table-row-checkbox"/>
       </template>
       <template slot="amount" slot-scope="row">
@@ -32,7 +36,9 @@
         {{ (row.item.description).substring(0,20) }}
       </template>
       <template slot="category" slot-scope="row">
-        <b-form-select :options="categories"/>
+        <b-form-select v-model="categorized_transactions[row.index]">
+          <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
+        </b-form-select>
       </template>
       <template slot="actions" slot-scope="row">
         <b-button size="sm" @click.stop="row.toggleDetails">
@@ -44,15 +50,13 @@
           {{ row.item.description }}
         </b-card>
       </template>
-      <template slot="empty" v-if="!loading_data">
-        <b-jumbotron header="No Transactions to Categorize" lead="Try importing some more through settings"/>
-      </template>
     </b-table>
     <b-row>
       <b-col md="auto">
         <b-pagination v-model="currentPage" :total-rows="imported_transactions.length"/>
       </b-col>
-      <b-col md="auto" class="ml-auto my-1 ">
+      <b-col md="auto">
+        <b-form-select :options="[10,15,20,50,100]" v-model="perPage" />
       </b-col>
     </b-row> 
   </b-container>
@@ -71,15 +75,17 @@ export default {
         { key: 'category', label: 'Category' },
         { key: 'actions', label: 'Actions' }
       ],
-      categories: [
-        { value: 'fuel', text: 'Fuel' }
-      ],
-      currentPage: 0
+      currentPage: 0,
+      categorized_transactions: {},
+      perPage: 10
     }
   },
   computed: {
     imported_transactions () {
       return this.$store.state.ImportedTransactions.imported_transactions
+    },
+    categories () {
+      return this.$store.state.Categories.categories
     },
     checked_transactions: {
       set (checkedArray) {
@@ -128,10 +134,32 @@ export default {
     },
     deleteSelected: async function() {
       this.$store.dispatch('deleteSelectedTransactions')
+    },
+    finaliseSelected: async function() {
+      let transactions = []
+      for (let index in this.checked_transactions) {
+        let rowNum = this.checked_transactions[index]
+        let temp_trans = this.imported_transactions[rowNum]
+        temp_trans.categoryId = this.categorized_transactions[rowNum]
+        transactions.push(temp_trans)
+      }
+      console.log(transactions)
+      // this.$store.dispatch('finaliseImportedTransactions', transactions)
+    },
+    categorizeTransactions: async function() {
+      console.log('Categorizing Transactions')
+      for (let transIndex in this.imported_transactions) {
+        for (let catIndex in this.categories) {
+          this.$set(this.categorized_transactions, this.imported_transactions[transIndex].id, this.categories[catIndex].id)
+          break;
+        }
+      }
+      console.log('Finished Categorizing')
     }
   },
-  mounted () {
+  created () {
     this.$store.dispatch('refreshImportedTransactions')
+    this.$store.dispatch('refreshCategories')
   }
 }
 </script>

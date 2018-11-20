@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
+
 $primary: #eeb902;
 
 html, body {
@@ -7,6 +9,10 @@ body {
   padding-top: 60px;
 }
 
+
+.mono-font {
+  font-family: 'Roboto Mono', monospace;
+}
 .table-header-checkbox {
   max-width: 10px;
   padding-bottom: 0.35rem;

@@ -8,3 +8,5 @@ methods.addAccount = (accounts) => {
 methods.getAllAccounts = () => {
   return db.accounts.toArray()
 }
+
+export default methods

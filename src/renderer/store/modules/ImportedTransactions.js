@@ -4,6 +4,7 @@ import mutators from '../mutators'
 const state = {
   imported_transactions: [],
   checked_transactions: [],
+  categorized_transactions: {},
   allChecked: false,
   isRefreshing: false
 }
@@ -20,6 +21,9 @@ const mutations = {
   },
   [mutators.IMPORTTRANS_SET_ISREFRESHING] (state, data) {
     state.isRefreshing = data
+  },
+  [mutators.IMPORTTRANS_SET_CATEGORIZEDTRANS] (state, data) {
+    state.categorized_transactions = { ...state.categorized_transactions, data }
   }
 }
 
@@ -40,9 +44,19 @@ const actions = {
   setIsRefreshing ({ commit }, payload) {
     commit(mutators.IMPORTTRANS_SET_ISREFRESHING, payload)
   },
-  async finaliseImportedTransactions ({ dispatch }, payload) {
-    for (let index in payload) {
-      await controllers.transaction.addTransaction(payload[index])
+  setCategorizedTransactions ({ commit }, payload) {
+    commit(mutators.IMPORTTRANS_SET_CATEGORIZEDTRANS, payload)
+  },
+  async finaliseSelectedImportedTransactions ({ state, dispatch }, payload) {
+    let transactions = []
+    for (let index in state.checked_transactions) {
+      let transId = state.checked_transactions[index]
+      let tempTrans = await controllers.imported_transaction.getTransactionById(transId)
+      tempTrans.categoryId = payload.categorized_transactions[transId]
+      transactions.push(tempTrans)
+    }
+    for (let index in transactions) {
+      await controllers.transaction.addTransaction(transactions[index])
     }
     await dispatch('deleteSelectedTransactions')
     dispatch('refreshImportedTransactions')
@@ -57,6 +71,7 @@ const actions = {
       }
     }
     dispatch('refreshImportedTransactions')
+    dispatch('setCheckedImportedTransaction', [])
   }
 }
 

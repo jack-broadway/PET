@@ -26,7 +26,7 @@
           class="table-header-checkbox"/>
       </template>
       <template slot="checkbox" slot-scope="row">
-        <b-form-checkbox @click.native.stop  :key="row.index" :value="row.index" 
+        <b-form-checkbox @click.native.stop :key="row.index" :value="row.item.id"
           v-model="checked_transactions" class="table-row-checkbox"/>
       </template>
       <template slot="amount" slot-scope="row">
@@ -36,7 +36,7 @@
         {{ (row.item.description).substring(0,20) }}
       </template>
       <template slot="category" slot-scope="row">
-        <b-form-select v-model="categorized_transactions[row.index]">
+        <b-form-select v-model="categorized_transactions[row.item.id]">
           <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
         </b-form-select>
       </template>
@@ -75,8 +75,8 @@ export default {
         { key: 'category', label: 'Category' },
         { key: 'actions', label: 'Actions' }
       ],
-      currentPage: 0,
       categorized_transactions: {},
+      currentPage: 0,
       perPage: 10
     }
   },
@@ -133,17 +133,12 @@ export default {
       this.checked_transactions = checked ? this.imported_transactions.map(transaction => transaction.id) : []
     },
     deleteSelected: async function() {
-      this.$store.dispatch('deleteSelectedTransactions')
+      await this.$store.dispatch('deleteSelectedTransactions')
     },
     finaliseSelected: async function() {
-      let transactions = []
-      for (let index in this.checked_transactions) {
-        let rowNum = this.checked_transactions[index]
-        let temp_trans = this.imported_transactions[rowNum]
-        temp_trans.categoryId = this.categorized_transactions[rowNum]
-        transactions.push(temp_trans)
-      }
-      this.$store.dispatch('finaliseImportedTransactions', transactions)
+      return this.$store.dispatch('finaliseSelectedImportedTransactions', {
+        categorized_transactions: this.categorized_transactions
+      })
     },
     categorizeTransactions: async function() {
       console.log('Categorizing Transactions')

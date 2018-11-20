@@ -21,7 +21,6 @@ methods.addTransaction = (transaction) => {
   return db.imported_transactions.put(transaction)
 }
 methods.deleteTransaction = (id) => {
-  console.log(`Deleting: ${id}`)
   return db.imported_transactions.where('id').equals(id).delete()
 }
 methods.deleteAllTransactions = () => {
@@ -29,6 +28,9 @@ methods.deleteAllTransactions = () => {
 }
 methods.getAllTransactions = () => {
   return db.imported_transactions.toArray()
+}
+methods.getTransactionById = (id) => {
+  return db.imported_transactions.get(id)
 }
 methods.getAccountsFromTransactions = async () => {
   return db.imported_transactions.orderBy('account').uniqueKeys()

@@ -21,6 +21,11 @@
           {{ row.item.description }}
         </b-card>
       </template>
+      <template slot="actions" slot-scope="row">
+        <b-button size="sm" @click.stop="row.toggleDetails">
+          {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
+        </b-button>
+      </template>
     </b-table>
     <b-row>
       <b-col md="auto">
@@ -42,7 +47,8 @@ export default {
         { key: 'account', sortable: true },
         { key: 'amount', sortable: true },
         { key: 'brief_desc', label: 'Brief Desc' },
-        { key: 'category', label: 'Category' }
+        { key: 'category', label: 'Category', sortable: true },
+        { key: 'actions', label: 'Actions' }
       ],
       currentPage: 0,
       perPage: 10

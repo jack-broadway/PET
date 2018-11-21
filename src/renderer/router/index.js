@@ -19,6 +19,11 @@ export default new Router({
       path: '/transactions',
       name: 'transactions',
       component: require('@/components/Transactions').default
+    },
+    {
+      path: '/categories',
+      name: 'categories',
+      component: require('@/components/Categories').default
     }
   ]
 })

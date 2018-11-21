@@ -69,7 +69,7 @@ export default {
       fields: [
         { key: 'checkbox', label: '' },
         { key: 'date', sortable: true },
-        { key: 'account', sortable: true },
+        { key: 'accountId', label: 'Account', sortable: true },
         { key: 'amount', sortable: true },
         { key: 'brief_desc', label: 'Brief Desc' },
         { key: 'category', label: 'Category' },
@@ -142,11 +142,29 @@ export default {
     },
     categorizeTransactions: async function() {
       console.log('Categorizing Transactions')
+      // Loop through all too be categorized transactions
+      trans_loop:
       for (let transIndex in this.imported_transactions) {
+        let currentTransaction = this.imported_transactions[transIndex]
+        // Loop through each category available
+        cat_loop:
         for (let catIndex in this.categories) {
-          this.$set(this.categorized_transactions, this.imported_transactions[transIndex].id, this.categories[catIndex].id)
-          break;
+          let currentCategory = this.categories[catIndex]
+          if(!currentCategory.match_words){
+            continue;
+          }
+          let matchWords = currentCategory.match_words.split(',')
+          // Loop through each matching term for that category
+          for(let matchWordIndex in matchWords){
+            // Create a regex string out of the match string, and sanitize it
+            let testRegex = new RegExp(`(${matchWords[matchWordIndex].replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, 'gi')
+            if(testRegex.test(currentTransaction.description)){
+              this.$set(this.categorized_transactions, currentTransaction.id, currentCategory.id)
+              continue trans_loop;
+            }
+          }
         }
+        this.$set(this.categorized_transactions, currentTransaction.id, this.categories[0].id)
       }
       console.log('Finished Categorizing')
     }

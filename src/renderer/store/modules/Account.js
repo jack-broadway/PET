@@ -23,7 +23,7 @@ const actions = {
   },
   refreshImportedAccounts ({ state, commit }) {
     return controllers.imported_transaction.getAccountsFromTransactions().then((data) => {
-      let existingAccounts = state.accounts.map(x => x.account)
+      let existingAccounts = state.accounts.map(x => x.accountId)
       let foundAccounts = []
       for (let account in data) {
         if (existingAccounts.includes(data[account])) {

@@ -38,7 +38,7 @@ export default {
     addAccountSubmit (evt) {
       evt.preventDefault()
       this.$store.dispatch('addAccount', {
-        account: this.form_data.account_id,
+        accountId: this.form_data.account_id,
         name: this.form_data.account_name
       })
     }

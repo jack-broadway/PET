@@ -3,8 +3,8 @@ import Dexie from 'dexie'
 export const db = new Dexie('PET-DB')
 
 db.version(1).stores({
-  imported_transactions: 'id++, account',
-  transactions: 'id++, categoryId',
+  imported_transactions: 'id++, accountId',
+  transactions: 'id++, accountId, categoryId',
   accounts: 'accountId',
   categories: 'id++'
 })

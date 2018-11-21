@@ -33,18 +33,7 @@ methods.getTransactionById = (id) => {
   return db.imported_transactions.get(id)
 }
 methods.getAccountsFromTransactions = async () => {
-  return db.imported_transactions.orderBy('account').uniqueKeys()
+  return db.imported_transactions.orderBy('accountId').uniqueKeys()
 }
-methods.getTransactionStatistics = async () => {
-  let transactions = await methods.getAllTransactions()
-  let totalCredit = 0
-  let totalDebit = 0
 
-  transactions.forEach((transaction) => {
-    totalCredit += isNaN(parseFloat(transaction['credit'])) ? 0 : parseInt(parseFloat(transaction['credit']) * 100)
-    totalDebit += isNaN(parseFloat(transaction['debit'])) ? 0 : parseInt(parseFloat(transaction['debit']) * 100)
-  })
-
-  return { totalCredit: totalCredit / 100, totalDebit: totalDebit / 100, balance: (totalCredit + totalDebit) / 100 }
-}
 export default methods

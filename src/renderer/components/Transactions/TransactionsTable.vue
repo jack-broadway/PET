@@ -44,7 +44,7 @@ export default {
     return {
       fields: [
         { key: 'date', sortable: true },
-        { key: 'account', sortable: true },
+        { key: 'accountId', label: 'Account', sortable: true },
         { key: 'amount', sortable: true },
         { key: 'brief_desc', label: 'Brief Desc' },
         { key: 'category', label: 'Category', sortable: true },

@@ -11,11 +11,13 @@ methods.getCategoryById = (id) => {
 methods.deleteCategoryById = (id) => {
   return db.categories.where('id').equals(id).delete().then(async () => {
     let defaultCategory = (await methods.getDefaultCategory()).id
-    console.log(defaultCategory)
     return db.transactions.where('categoryId').equals(id).modify({
       categoryId: defaultCategory
     })
   })
+}
+methods.updateCategoryById = (id, update) => {
+  return db.categories.update(id, update)
 }
 methods.getAllCategories = () => {
   return db.categories.toArray()

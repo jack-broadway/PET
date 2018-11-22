@@ -6,7 +6,7 @@
           <b-list-group-item class="d-flex justify-content-between align-items-center"
             v-for="category in categories" :key="category.id">
             {{ category.name }}
-            <div>
+            <div v-if="!category.default">
               <b-button variant="primary" class="text-light" @click.stop="editButtonClicked(category.id)">Edit</b-button>
               <b-button variant="danger" class="text-light" @click.stop="deleteButtonClicked(category.id)">Delete</b-button>
             </div>
@@ -46,7 +46,6 @@ export default {
       this.showEditModal = true
     },
     async deleteButtonClicked (categoryId) {
-      console.log(`Deleting: ${categoryId}`)
       await controllers.categories.deleteCategoryById(categoryId)
       this.$store.dispatch('refreshCategories')
     },

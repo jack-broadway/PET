@@ -10,6 +10,12 @@
     </b-row>  
     <b-table show-empty striped class="mt-2" 
       :items="transactions" :fields="fields" :per-page="perPage" :current-page="currentPage">
+      <template slot="HEAD_checkbox" slot-scope="row">
+        <b-form-checkbox @click.native.stop class="table-header-checkbox"/>
+      </template>
+      <template slot="checkbox" slot-scope="row">
+        <b-form-checkbox @click.native.stop class="table-row-checkbox"/>
+      </template>
       <template slot="amount" slot-scope="row">
         {{ row.item.debit || row.item.credit }}
       </template>
@@ -25,6 +31,7 @@
         <b-button size="sm" @click.stop="row.toggleDetails">
           {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
         </b-button>
+        <b-button size="sm" variant="primary" class="text-light">Edit</b-button>
       </template>
     </b-table>
     <b-row>
@@ -43,6 +50,7 @@ export default {
   data () {
     return {
       fields: [
+        { key: 'checkbox', label: '' },
         { key: 'date', sortable: true },
         { key: 'accountId', label: 'Account', sortable: true },
         { key: 'amount', sortable: true },

@@ -52,6 +52,13 @@ export default {
       } else {
         // Update Existing
         console.log('Updating Existing')
+        controllers.categories.updateCategoryById(this.editId, {
+          name: this.add_form.category_name,
+          match_words: this.add_form.category_keywords
+        }).then(() => {
+          this.$store.dispatch('refreshCategories')
+          if (this.on_cancel) return this.on_cancel()
+        })
       }
     }
   }

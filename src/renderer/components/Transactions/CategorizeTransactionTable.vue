@@ -147,7 +147,6 @@ export default {
       for (let transIndex in this.imported_transactions) {
         let currentTransaction = this.imported_transactions[transIndex]
         // Loop through each category available
-        cat_loop:
         for (let catIndex in this.categories) {
           let currentCategory = this.categories[catIndex]
           if(!currentCategory.match_words){

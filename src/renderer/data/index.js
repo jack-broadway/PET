@@ -6,13 +6,14 @@ db.version(1).stores({
   imported_transactions: 'id++, accountId',
   transactions: 'id++, accountId, categoryId',
   accounts: 'accountId',
-  categories: 'id++'
+  categories: 'id++, default'
 })
 
 db.categories.count().then(count => {
   if (count === 0) {
     db.categories.put({
-      name: 'Uncategorized'
+      name: 'Uncategorized',
+      default: 1
     })
   }
 })

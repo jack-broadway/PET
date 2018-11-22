@@ -1,12 +1,15 @@
 <template>
   <b-container fluid>
-    <h1>Categories</h1>
     <b-row>
       <b-col>
         <pet-category-list/>
       </b-col>
       <b-col>
-        <pet-category-add-form/>
+        <b-card header="Add Category">
+          <b-card-body>
+            <pet-category-add-form/>
+          </b-card-body>
+        </b-card>
       </b-col>
     </b-row>
   </b-container>

@@ -13,7 +13,10 @@
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto">
         <b-nav-item-dropdown text="Settings" right>
+          <b-dropdown-item @click.prevent="importData">Import Bank Statement</b-dropdown-item>
+          <b-dropdown-divider/>
           <b-dropdown-item @click.prevent="importData">Import Data</b-dropdown-item>
+          <b-dropdown-item @click.prevent="importData">Export Data</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-collapse>

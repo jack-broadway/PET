@@ -21,18 +21,22 @@ const actions = {
       commit(mutators.ACCOUNTS_SET_ACCOUNTS, data)
     })
   },
-  refreshImportedAccounts ({ state, commit }) {
-    return controllers.imported_transaction.getAccountsFromTransactions().then((data) => {
-      let existingAccounts = state.accounts.map(x => x.accountId)
-      let foundAccounts = []
-      for (let account in data) {
-        if (existingAccounts.includes(data[account])) {
-          continue
-        }
-        foundAccounts.push(data[account])
+  async refreshAvailableAccounts ({ state, commit }) {
+    let importedAccounts = await controllers.imported_transaction.getAccountsFromTransactions()
+    let transactionAccounts = await controllers.transaction.getAccountsFromTransactions()
+
+    let unAddedAccounts = [...new Set(importedAccounts.concat(transactionAccounts))]
+    let existingAccounts = state.accounts.map(x => x.accountId)
+    let foundAccounts = []
+    console.log(unAddedAccounts)
+
+    for (let account in unAddedAccounts) {
+      if (existingAccounts.includes(unAddedAccounts[account])) {
+        continue
       }
-      commit(mutators.ACCOUNTS_SET_IMPORTED_ACCOUNTS, foundAccounts)
-    })
+      foundAccounts.push(unAddedAccounts[account])
+    }
+    commit(mutators.ACCOUNTS_SET_IMPORTED_ACCOUNTS, foundAccounts)
   },
   addAccount ({ dispatch }, payload) {
     return controllers.account.addAccount(payload).then(() => {

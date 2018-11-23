@@ -1,16 +1,18 @@
 import fastcsv from 'fast-csv'
 import fs from 'fs'
+import moment from 'moment'
 
 let db = require('../index').db
 
 let methods = {}
 
-methods.importFile = (filepath, headers) => {
+methods.importFile = (filepath, config) => {
   return new Promise((resolve, reject) => {
     let csvStream = fs.createReadStream(filepath)
 
-    let csvReader = fastcsv.fromStream(csvStream, {renameHeaders: true, headers: headers})
+    let csvReader = fastcsv.fromStream(csvStream, {renameHeaders: true, headers: config.headers})
     csvReader.on('data', async (data) => {
+      data.date = moment(data.date, config.date_format).format('YYYY-MM-DD')
       await methods.addTransaction(data)
     })
     csvReader.on('error', reject)

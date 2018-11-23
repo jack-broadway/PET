@@ -49,7 +49,7 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch('refreshImportedAccounts')
+    this.$store.dispatch('refreshAvailableAccounts')
   }
 }
 </script>

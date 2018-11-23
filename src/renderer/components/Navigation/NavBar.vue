@@ -35,9 +35,12 @@ export default {
           {name: 'CSV', extensions: ['csv']}
         ]
       })
-      controllers.imported_transaction.importFile(csvPath[0], [
-        'date', 'accountId', 'description', 'credit', 'debit'
-      ]).then(() => {
+      controllers.imported_transaction.importFile(csvPath[0], {
+        headers: [
+          'date', 'accountId', 'description', 'credit', 'debit'
+        ],
+        date_format: 'DD/MM/YYYY'
+      }).then(() => {
         this.$store.dispatch('refreshImportedTransactions')
       })
     }

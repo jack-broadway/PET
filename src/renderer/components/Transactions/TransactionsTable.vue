@@ -31,7 +31,7 @@
         <b-button size="sm" @click.stop="row.toggleDetails">
           {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
         </b-button>
-        <b-button size="sm" variant="primary" class="text-light">Edit</b-button>
+        <b-button size="sm" variant="primary" class="text-light" @click="editButtonClicked(row.item.id)">Edit</b-button>
       </template>
     </b-table>
     <b-row>
@@ -41,12 +41,20 @@
       <b-col md="auto">
         <b-form-select :options="[10,15,20,50,100]" v-model="perPage" />
       </b-col>
-    </b-row> 
+    </b-row>
+    <b-modal v-model="showEditModal" hide-header hide-footer>
+      <pet-transaction-form :editId="editTransactionId" :on_cancel="cancelButtonClicked"/>
+    </b-modal>
   </b-container>
 </template>
 <script>
+import TransactionForm from './TransactionForm.vue'
+
 export default {
   name: 'pet-transaction-table',
+  components: {
+    'pet-transaction-form': TransactionForm
+  },
   data () {
     return {
       fields: [
@@ -59,7 +67,18 @@ export default {
         { key: 'actions', label: 'Actions' }
       ],
       currentPage: 0,
-      perPage: 10
+      perPage: 10,
+      showEditModal: false,
+      editTransactionId: null
+    }
+  },
+  methods: {
+    cancelButtonClicked () {
+      this.showEditModal = false
+    },
+    editButtonClicked (id) {
+      this.editTransactionId = id
+      this.showEditModal = true
     }
   },
   computed: {

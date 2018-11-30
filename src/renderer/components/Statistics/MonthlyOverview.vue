@@ -70,20 +70,24 @@ export default {
     monthlyChartData () {
       if(this.monthly_stats.categoryTotals === null) return
       let chartData = []
+
+      // Loop through the category spends
       for (let index in this.monthly_stats.categoryTotals) {
         let currentTotalObject = this.monthly_stats.categoryTotals[index]
-        if(currentTotalObject.debit === 0) continue
+        let categoryAmount = currentTotalObject.debit + currentTotalObject.credit
+
+        if(categoryAmount >= 0) continue
+
         chartData.push({
           name: currentTotalObject.category.name,
-          y: parseFloat(((currentTotalObject.debit / 100) / this.monthly_stats.debit).toFixed(2))
+          y: (categoryAmount / 100) / (this.monthly_stats.debit)
         })
       }
-      console.log(chartData)
       return chartData
     },
     monthlyChartOptions () {
       return {
-        title: 'Category Spending',
+        title: 'Spending by Category',
         seriesName: 'Categories',
         data: this.monthlyChartData
       }

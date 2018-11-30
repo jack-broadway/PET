@@ -7,6 +7,9 @@
       <b-col md="auto">
         <b-form-select :options="[10,15,20,50,100]" v-model="perPage" />
       </b-col>
+      <b-col md="auto">
+        <b-form-input v-model="filter" placeholder="Type to Search" />
+      </b-col>
       <b-col md="auto" class="ml-auto my-1 ">
         <div class="float-right">
           <b-button variant="dark" class="mr-1" @click.prevent="categorizeTransactions">Auto Categorize</b-button>
@@ -20,7 +23,7 @@
     </b-row>  
     <b-table show-empty striped class="mt-2" 
       :items="imported_transactions" :fields="fields" :sort-compare="sortCompare"
-      :per-page="perPage" :current-page="currentPage">
+      :per-page="perPage" :current-page="currentPage" :filter="filter">
       <template slot="HEAD_checkbox" slot-scope="row">
         <b-form-checkbox @click.native.stop @change="toggleAllSelected" v-model="allSelected" 
           class="table-header-checkbox"/>
@@ -77,7 +80,8 @@ export default {
       ],
       categorized_transactions: {},
       currentPage: 0,
-      perPage: 10
+      perPage: 10,
+      filter: null
     }
   },
   computed: {
@@ -127,6 +131,9 @@ export default {
         }
       } else {
         return null
+      }
+      if (key === 'brief_desc') {
+        return a.description.localeCompare(b.description)
       }
     },
     toggleAllSelected(checked){

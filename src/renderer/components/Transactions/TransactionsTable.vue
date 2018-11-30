@@ -7,8 +7,11 @@
       <b-col md="auto">
         <b-form-select :options="[10,15,20,50,100]" v-model="perPage" />
       </b-col>
+      <b-col md="auto">
+        <b-form-input v-model="filter" placeholder="Type to Search" />
+      </b-col>
     </b-row>  
-    <b-table show-empty striped class="mt-2" 
+    <b-table show-empty striped class="mt-2" :sort-compare="sortTable" :filter="filter"
       :items="transactions" :fields="fields" :per-page="perPage" :current-page="currentPage">
       <template slot="HEAD_checkbox" slot-scope="row">
         <b-form-checkbox @click.native.stop class="table-header-checkbox"/>
@@ -62,14 +65,15 @@ export default {
         { key: 'date', sortable: true },
         { key: 'accountId', label: 'Account', sortable: true },
         { key: 'amount', sortable: true },
-        { key: 'brief_desc', label: 'Brief Desc' },
+        { key: 'brief_desc', label: 'Brief Desc', sortable: true },
         { key: 'category', label: 'Category', sortable: true },
         { key: 'actions', label: 'Actions' }
       ],
       currentPage: 0,
       perPage: 10,
       showEditModal: false,
-      editTransactionId: null
+      editTransactionId: null,
+      filter: null
     }
   },
   methods: {
@@ -79,6 +83,11 @@ export default {
     editButtonClicked (id) {
       this.editTransactionId = id
       this.showEditModal = true
+    },
+    sortTable (a, b, key) {
+      if (key === 'brief_desc') {
+        return a.description.localeCompare(b.description)
+      }
     }
   },
   computed: {

@@ -1,11 +1,13 @@
 <template>
   <b-navbar toggleable="sm" fixed="top" variant="primary" type="dark">
-    <b-navbar-brand to="/">PET</b-navbar-brand>
+    <b-navbar-brand to="overview">PET</b-navbar-brand>
     <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
     <b-collapse is-nav id="nav_collapse">
       <!-- Left aligned nav items -->
       <b-navbar-nav>
-        <b-nav-item to="/transactions">Transactions</b-nav-item>
+        <b-nav-item to="overview">Overview</b-nav-item>
+        <b-nav-item to="transactions">Transactions</b-nav-item>
+        <b-nav-item to="imported_transactions">Imported Transactions</b-nav-item>
       </b-navbar-nav>
 
       <!-- Right aligned nav items -->

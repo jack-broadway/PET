@@ -8,6 +8,9 @@ methods.addTransaction = (transaction) => {
 methods.getTransactionById = (id) => {
   return db.transactions.get(id)
 }
+methods.updateTransactionById = (id, update) => {
+  return db.transactions.update(id, update)
+}
 methods.getAllTransactions = async () => {
   const allTransactions = await db.transactions.toArray()
 
@@ -15,6 +18,9 @@ methods.getAllTransactions = async () => {
     transaction.category = (await db.categories.get(transaction.categoryId).catch(() => { return {name: 'Null'} })).name
   }))
   return allTransactions
+}
+methods.getTransactionsInRange = async (startDate, endDate) => {
+  return db.transactions.where('date').between(startDate, endDate).toArray()
 }
 methods.getAccountsFromTransactions = async () => {
   return db.transactions.orderBy('accountId').uniqueKeys()

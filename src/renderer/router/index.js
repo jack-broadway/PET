@@ -11,19 +11,9 @@ export default new Router({
       component: require('@/components/Index').default
     },
     {
-      path: '/accounts',
-      name: 'accounts',
-      component: require('@/components/Accounts').default
-    },
-    {
       path: '/transactions',
       name: 'transactions',
       component: require('@/components/Transactions').default
-    },
-    {
-      path: '/categories',
-      name: 'categories',
-      component: require('@/components/Categories').default
     }
   ]
 })

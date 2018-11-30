@@ -1,6 +1,10 @@
 <template>
   <div>
-    <b-card header="Categories">
+    <b-card header-class="card-header-button">
+      <template slot="header">
+        <h3>Categories</h3>
+        <b-button variant="primary" class="text-light" @click.stop="newButtonClicked()">New</b-button>
+      </template>
       <b-card-body>
         <b-list-group>
           <b-list-group-item class="d-flex justify-content-between align-items-center"
@@ -51,6 +55,10 @@ export default {
     },
     cancelButtonClicked () {
       this.showEditModal = false
+    },
+    newButtonClicked () {
+      this.editCategoryId = null
+      this.showEditModal = true
     }
   },
   created () {

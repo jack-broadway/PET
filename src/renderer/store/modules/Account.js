@@ -28,7 +28,6 @@ const actions = {
     let unAddedAccounts = [...new Set(importedAccounts.concat(transactionAccounts))]
     let existingAccounts = state.accounts.map(x => x.accountId)
     let foundAccounts = []
-    console.log(unAddedAccounts)
 
     for (let account in unAddedAccounts) {
       if (existingAccounts.includes(unAddedAccounts[account])) {
@@ -37,12 +36,6 @@ const actions = {
       foundAccounts.push(unAddedAccounts[account])
     }
     commit(mutators.ACCOUNTS_SET_IMPORTED_ACCOUNTS, foundAccounts)
-  },
-  addAccount ({ dispatch }, payload) {
-    return controllers.account.addAccount(payload).then(() => {
-      dispatch('refreshAccountData')
-      dispatch('refreshImportedAccounts')
-    })
   }
 }
 

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import BootstrapVue from 'bootstrap-vue'
 import VueElectron from 'vue-electron'
+import HighchartsVue from 'highcharts-vue'
 
 import App from './App'
 import router from './router'
@@ -17,6 +18,7 @@ Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 Vue.use(BootstrapVue)
 Vue.use(VueElectron)
+Vue.use(HighchartsVue)
 
 /* eslint-disable no-new */
 new Vue({

@@ -48,6 +48,7 @@ export default {
             category_name: '',
             category_keywords: ''
           }
+          if (this.on_cancel) return this.on_cancel()
         })
       } else {
         // Update Existing

@@ -4,7 +4,7 @@ export const db = new Dexie('PET-DB')
 
 db.version(1).stores({
   imported_transactions: 'id++, accountId',
-  transactions: 'id++, accountId, categoryId',
+  transactions: 'id++, accountId, categoryId, date',
   accounts: 'accountId',
   categories: 'id++, default'
 })

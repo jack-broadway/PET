@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
 
-$primary: #eeb902;
+$primary: #22a6b3;
 
 html, body {
   height: 100vh;
@@ -9,14 +9,21 @@ body {
   padding-top: 60px;
 }
 
+.card-header-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
 .mono-font {
   font-family: 'Roboto Mono', monospace;
 }
+
 .table-header-checkbox {
   max-width: 10px;
   padding-bottom: 0.35rem;
 }
+
 .table-row-checkbox {
   max-width: 10px;
 }

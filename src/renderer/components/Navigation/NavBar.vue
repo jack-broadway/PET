@@ -6,8 +6,6 @@
       <!-- Left aligned nav items -->
       <b-navbar-nav>
         <b-nav-item to="/transactions">Transactions</b-nav-item>
-        <b-nav-item to="/accounts">Accounts</b-nav-item>
-        <b-nav-item to="/categories">Categories</b-nav-item>
       </b-navbar-nav>
 
       <!-- Right aligned nav items -->

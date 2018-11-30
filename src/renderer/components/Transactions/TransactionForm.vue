@@ -1,5 +1,5 @@
 <template>
-  <b-form>
+  <b-form @submit="submitTransaction">
     <b-form-group label="Transaction Date" label-for="transaction_date">
       <b-input type="date" id="transaction_date" v-model="transaction_form.date" required/>
     </b-form-group>
@@ -12,7 +12,7 @@
     <b-form-group label="Transaction Amount" label-for="transaction_amount">
       <b-input id="transaction_amount" v-model="transaction_form.amount" required/>
     </b-form-group>
-    <b-form-group label="Transaction Descrption" label-for="transaction_description">
+    <b-form-group label="Transaction Description" label-for="transaction_description">
       <b-input id="transaction_description" v-model="transaction_form.description" required/>
     </b-form-group>
     <b-form-group label="Transaction Category">
@@ -54,6 +54,30 @@ export default {
         description: '',
         categoryId: null
       }
+    }
+  },
+  methods: {
+    submitTransaction (evt) {
+      evt.preventDefault()
+      if (this.editId) {
+        // Updating existing
+        let updatedTransaction = {
+          categoryId: this.transaction_form.categoryId,
+          accountId: this.transaction_form.accountId,
+          date: this.transaction_form.date,
+          description: this.transaction_form.description
+        }
+        if (this.transaction_form.amount > 0) {
+          updatedTransaction.credit = this.transaction_form.amount
+        } else {
+          updatedTransaction.debit = this.transaction_form.amount
+        }
+        controllers.transaction.updateTransactionById(this.editId, updatedTransaction)
+      } else {
+        // New Transaction
+      }
+      if (this.on_cancel) this.on_cancel()
+      this.$store.dispatch('refreshTransactions')
     }
   },
   computed: {

@@ -1,22 +1,22 @@
 <template>
   <b-container fluid class="mt-2">
     <b-row>
-      <b-col md="auto">
+      <b-col sm="auto">
         <b-pagination v-model="currentPage" :total-rows="imported_transactions.length"/>
       </b-col>
-      <b-col md="auto">
+      <b-col sm="auto">
         <b-form-select :options="[10,15,20,50,100]" v-model="perPage" />
       </b-col>
-      <b-col md="auto">
+      <b-col sm="auto">
         <b-form-input v-model="filter" placeholder="Type to Search" />
       </b-col>
       <b-col md="auto" class="ml-auto my-1 ">
         <div class="float-right">
           <b-button variant="dark" class="mr-1" @click.prevent="categorizeTransactions">Auto Categorize</b-button>
-          <b-button variant="dark" class="mr-1" @click.prevent="finaliseSelected">Finalise ({{ checked_transactions.length }})</b-button>
+          <b-button variant="dark" class="mr-1" @click.prevent="finaliseSelectedTransactions">Finalise ({{ checked_transactions.length }})</b-button>
           <b-dropdown right :text="`Actions (${checked_transactions.length })`" variant="primary">
             <b-dropdown-item >Merge Transactions</b-dropdown-item>
-            <b-dropdown-item @click.prevent="deleteSelected">Delete</b-dropdown-item>
+            <b-dropdown-item @click.prevent="deleteSelectedTransactions">Delete</b-dropdown-item>
           </b-dropdown>
         </div>
       </b-col>
@@ -25,7 +25,7 @@
       :items="imported_transactions" :fields="fields" :sort-compare="sortCompare"
       :per-page="perPage" :current-page="currentPage" :filter="filter">
       <template slot="HEAD_checkbox" slot-scope="row">
-        <b-form-checkbox @click.native.stop @change="toggleAllSelected" v-model="allSelected" 
+        <b-form-checkbox @click.native.stop @change="toggleAllSelected" v-model="allChecked[currentPage]"
           class="table-header-checkbox"/>
       </template>
       <template slot="checkbox" slot-scope="row">
@@ -55,16 +55,19 @@
       </template>
     </b-table>
     <b-row>
-      <b-col md="auto">
+      <b-col sm="auto">
         <b-pagination v-model="currentPage" :total-rows="imported_transactions.length"/>
       </b-col>
-      <b-col md="auto">
+      <b-col sm="auto">
         <b-form-select :options="[10,15,20,50,100]" v-model="perPage" />
       </b-col>
     </b-row> 
   </b-container>
 </template>
 <script>
+/* eslint no-labels: ["error", { "allowLoop": true }] */
+import controllers from '../../data/controllers'
+
 export default {
   name: 'pet-categorize-transaction-table',
   data () {
@@ -79,6 +82,8 @@ export default {
         { key: 'actions', label: 'Actions' }
       ],
       categorized_transactions: {},
+      checked_transactions: [],
+      allChecked: [],
       currentPage: 0,
       perPage: 10,
       filter: null
@@ -91,22 +96,6 @@ export default {
     categories () {
       return this.$store.state.Categories.categories
     },
-    checked_transactions: {
-      set (checkedArray) {
-        return this.$store.dispatch('setCheckedImportedTransaction', checkedArray)
-      },
-      get () {
-        return this.$store.state.ImportedTransactions.checked_transactions
-      }
-    },
-    allSelected: {
-      set (allSelectedState) {
-        return this.$store.dispatch('setAllChecked', allSelectedState)
-      },
-      get () {
-        return this.$store.state.ImportedTransactions.allSelected
-      }
-    },
     loading_data: {
       set (isRefreshingState) {
         return this.$store.dispatch('setIsRefreshing', isRefreshingState)
@@ -117,56 +106,80 @@ export default {
     }
   },
   methods: {
-    /* eslint-disable */
+    async finaliseSelectedTransactions () {
+      this.allChecked = []
+      let transactions = []
+      for (let index in this.checked_transactions) {
+        let transId = this.checked_transactions[index]
+        let tempTrans = await controllers.imported_transaction.getTransactionById(transId)
+        tempTrans.categoryId = this.categorized_transactions[transId]
+        transactions.push(tempTrans)
+      }
+      for (let index in transactions) {
+        await controllers.transaction.addTransaction(transactions[index])
+      }
+      await this.deleteSelectedTransactions()
+      this.$store.dispatch('refreshImportedTransactions')
+      this.$store.dispatch('refreshTransactions')
+    },
+    async deleteSelectedTransactions () {
+      this.allChecked = []
+      for (let transactionId in this.checked_transactions) {
+        await controllers.imported_transaction.deleteTransactionById(this.checked_transactions[transactionId])
+      }
+      this.$store.dispatch('refreshImportedTransactions')
+      this.checked_transactions = []
+    },
     sortCompare (a, b, key) {
       if (key === 'amount') {
-        let a_amt = parseFloat(a.credit || a.debit)
-        let b_amt = parseFloat(b.credit || b.debit)
-        if(a_amt > b_amt){
+        let aAmt = parseFloat(a.credit || a.debit)
+        let bAmt = parseFloat(b.credit || b.debit)
+        if (aAmt > bAmt) {
           return 1
-        } else if (a_amt === b_amt){
+        } else if (aAmt === bAmt) {
           return 0
         } else {
           return -1
         }
-      } else {
-        return null
       }
       if (key === 'brief_desc') {
         return a.description.localeCompare(b.description)
       }
+      return null
     },
-    toggleAllSelected(checked){
-      this.checked_transactions = checked ? this.imported_transactions.map(transaction => transaction.id) : []
+    toggleAllSelected (checked) {
+      let startingItem = (this.currentPage - 1) * this.perPage
+      let checkedItems = this.checked_transactions
+      for (let rowNumber = startingItem; rowNumber < startingItem + this.perPage; rowNumber++) {
+        let currentTransactionId = this.imported_transactions[rowNumber].id
+        if (checked) {
+          checkedItems.push(currentTransactionId)
+        } else {
+          checkedItems = checkedItems.filter(item => item !== currentTransactionId)
+        }
+      }
+      this.checked_transactions = checkedItems
     },
-    deleteSelected: async function() {
-      await this.$store.dispatch('deleteSelectedTransactions')
-    },
-    finaliseSelected: async function() {
-      return this.$store.dispatch('finaliseSelectedImportedTransactions', {
-        categorized_transactions: this.categorized_transactions
-      })
-    },
-    categorizeTransactions: async function() {
+    categorizeTransactions: async function () {
       console.log('Categorizing Transactions')
       // Loop through all too be categorized transactions
-      trans_loop:
+      transLoop:
       for (let transIndex in this.imported_transactions) {
         let currentTransaction = this.imported_transactions[transIndex]
         // Loop through each category available
         for (let catIndex in this.categories) {
           let currentCategory = this.categories[catIndex]
-          if(!currentCategory.match_words){
-            continue;
+          if (!currentCategory.match_words) {
+            continue
           }
           let matchWords = currentCategory.match_words.split(',')
           // Loop through each matching term for that category
-          for(let matchWordIndex in matchWords){
+          for (let matchWordIndex in matchWords) {
             // Create a regex string out of the match string, and sanitize it
-            let testRegex = new RegExp(`(${matchWords[matchWordIndex].replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, 'gi')
-            if(testRegex.test(currentTransaction.description)){
+            let testRegex = new RegExp(`(${matchWords[matchWordIndex].replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&')})`, 'gi')
+            if (testRegex.test(currentTransaction.description)) {
               this.$set(this.categorized_transactions, currentTransaction.id, currentCategory.id)
-              continue trans_loop;
+              continue transLoop
             }
           }
         }

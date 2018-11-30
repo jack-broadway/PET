@@ -11,6 +11,9 @@ methods.getTransactionById = (id) => {
 methods.updateTransactionById = (id, update) => {
   return db.transactions.update(id, update)
 }
+methods.deleteTransactionById = (id) => {
+  return db.transactions.where('id').equals(id).delete()
+}
 methods.getAllTransactions = async () => {
   const allTransactions = await db.transactions.toArray()
 

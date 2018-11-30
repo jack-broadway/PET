@@ -22,7 +22,7 @@ methods.importFile = (filepath, config) => {
 methods.addTransaction = (transaction) => {
   return db.imported_transactions.put(transaction)
 }
-methods.deleteTransaction = (id) => {
+methods.deleteTransactionById = (id) => {
   return db.imported_transactions.where('id').equals(id).delete()
 }
 methods.deleteAllTransactions = () => {

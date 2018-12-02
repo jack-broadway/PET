@@ -23,7 +23,7 @@ methods.getAllTransactions = async () => {
   return allTransactions
 }
 methods.getTransactionsInRange = async (startDate, endDate) => {
-  return db.transactions.where('date').between(startDate, endDate).toArray()
+  return db.transactions.where('date').between(startDate, endDate, true, true).toArray()
 }
 methods.getAccountsFromTransactions = async () => {
   return db.transactions.orderBy('accountId').uniqueKeys()

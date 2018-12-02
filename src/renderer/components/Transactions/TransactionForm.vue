@@ -59,22 +59,25 @@ export default {
   methods: {
     submitTransaction (evt) {
       evt.preventDefault()
+      let updatedTransaction = {
+        categoryId: this.transaction_form.categoryId,
+        accountId: this.transaction_form.accountId,
+        date: this.transaction_form.date,
+        description: this.transaction_form.description
+      }
+      // Check if credit or debit
+      if (this.transaction_form.amount > 0) {
+        updatedTransaction.credit = this.transaction_form.amount
+      } else {
+        updatedTransaction.debit = this.transaction_form.amount
+      }
+
       if (this.editId) {
         // Updating existing
-        let updatedTransaction = {
-          categoryId: this.transaction_form.categoryId,
-          accountId: this.transaction_form.accountId,
-          date: this.transaction_form.date,
-          description: this.transaction_form.description
-        }
-        if (this.transaction_form.amount > 0) {
-          updatedTransaction.credit = this.transaction_form.amount
-        } else {
-          updatedTransaction.debit = this.transaction_form.amount
-        }
         controllers.transaction.updateTransactionById(this.editId, updatedTransaction)
       } else {
         // New Transaction
+        controllers.transaction.addTransaction(updatedTransaction)
       }
       if (this.on_cancel) this.on_cancel()
       this.$store.dispatch('refreshTransactions')

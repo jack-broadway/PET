@@ -12,6 +12,7 @@
       </b-col>
       <b-col md="auto" class="ml-auto my-1">
         <div class="float-right">
+          <b-button variant="dark" class="mr-1" @click.prevent="newTransactionClicked">New</b-button>
           <b-button variant="danger" class="mr-1" @click.prevent="deleteSelectedTransactions">Delete ({{ checked_transactions.length }})</b-button>
         </div>
       </b-col>
@@ -91,6 +92,10 @@ export default {
     },
     editButtonClicked (id) {
       this.editTransactionId = id
+      this.showEditModal = true
+    },
+    newTransactionClicked () {
+      this.editTransactionId = null
       this.showEditModal = true
     },
     sortTable (a, b, key) {

@@ -16,7 +16,7 @@
           <pet-category-spendlist :category_spends="monthly_stats.categoryTotals"/>
         </b-col>
         <b-col md="6">
-          <pet-category-monthlychart :chart-options="monthlyChartOptions"/>
+          <pet-category-monthlychart v-if="monthlyChartData.length !== 0" :chart-options="monthlyChartOptions"/>
         </b-col>
       </b-row>
     </b-card-body>
@@ -75,9 +75,8 @@ export default {
       for (let index in this.monthly_stats.categoryTotals) {
         let currentTotalObject = this.monthly_stats.categoryTotals[index]
         let categoryAmount = currentTotalObject.debit + currentTotalObject.credit
-
+        console.log(currentTotalObject)
         if(categoryAmount >= 0) continue
-
         chartData.push({
           name: currentTotalObject.category.name,
           y: (categoryAmount / 100) / (this.monthly_stats.debit)

@@ -58,7 +58,6 @@
   "dependencies": {
     "axios": "^0.18.0",
     "bootstrap-vue": "^2.0.0-rc.11",
-    "csv-parse": "^3.2.0",
     "dexie": "^2.0.4",
     "fast-csv": "^2.4.1",
     "highcharts": "^6.2.0",

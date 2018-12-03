@@ -16,7 +16,7 @@
           <pet-category-spendlist :category_spends="monthly_stats.categoryTotals"/>
         </b-col>
         <b-col md="6">
-          <pet-category-monthlychart v-if="monthlyChartData.length !== 0" :chart-options="monthlyChartOptions"/>
+          <pet-category-monthlychart v-if="monthlyChartData != null && monthlyChartData.length !== 0" :chart-options="monthlyChartOptions"/>
         </b-col>
       </b-row>
     </b-card-body>

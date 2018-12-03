@@ -1,4 +1,5 @@
 import Dexie from 'dexie'
+import 'dexie-export-import'
 
 export const db = new Dexie('PET-DB')
 

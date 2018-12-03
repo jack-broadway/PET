@@ -20,6 +20,14 @@ Vue.use(BootstrapVue)
 Vue.use(VueElectron)
 Vue.use(HighchartsVue)
 
+// PET Methods
+Vue.prototype.$currencyFormatter = new Intl.NumberFormat('en-AU', {
+  style: 'currency',
+  currency: 'AUD',
+  minimumFractionDigits: 2
+})
+
+// Setup
 /* eslint-disable no-new */
 new Vue({
   components: { App },

@@ -75,7 +75,6 @@ export default {
       for (let index in this.monthly_stats.categoryTotals) {
         let currentTotalObject = this.monthly_stats.categoryTotals[index]
         let categoryAmount = currentTotalObject.debit + currentTotalObject.credit
-        console.log(currentTotalObject)
         if(categoryAmount >= 0) continue
         chartData.push({
           name: currentTotalObject.category.name,

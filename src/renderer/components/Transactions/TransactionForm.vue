@@ -41,9 +41,7 @@ export default {
       if (newVal === oldVal) return
       let transaction = null
       if (this.isImported) {
-        console.log('Hit imported change')
         transaction = await controllers.imported_transaction.getTransactionById(newVal)
-        console.log(transaction)
       } else {
         transaction = await controllers.transaction.getTransactionById(newVal)
       }

@@ -15,7 +15,7 @@
     <b-form-group label="Transaction Description" label-for="transaction_description">
       <b-input id="transaction_description" v-model="transaction_form.description" required/>
     </b-form-group>
-    <b-form-group label="Transaction Category">
+    <b-form-group label="Transaction Category" v-if="!isImported">
       <b-form-select v-model="transaction_form.categoryId" required>
         <option :value="null">Please select a category</option>
         <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
@@ -30,12 +30,24 @@ import controllers from '../../data/controllers'
 
 export default {
   name: 'pet-transaction-form',
-  props: ['editId', 'on_cancel'],
+  props: {
+    'isImported': Boolean,
+    'editId': Number,
+    'on_cancel': Function
+  },
   watch: {
     async editId (newVal, oldVal) {
       console.log(`${newVal} : ${oldVal}`)
       if (newVal === oldVal) return
-      let transaction = await controllers.transaction.getTransactionById(newVal)
+      let transaction = null
+      if (this.isImported) {
+        console.log('Hit imported change')
+        transaction = await controllers.imported_transaction.getTransactionById(newVal)
+        console.log(transaction)
+      } else {
+        transaction = await controllers.transaction.getTransactionById(newVal)
+      }
+      if (!transaction) return
       this.transaction_form = {
         date: transaction.date,
         accountId: transaction.accountId,
@@ -74,13 +86,25 @@ export default {
 
       if (this.editId) {
         // Updating existing
-        controllers.transaction.updateTransactionById(this.editId, updatedTransaction)
+        if (this.isImported) {
+          controllers.imported_transaction.updateTransactionById(this.editId, updatedTransaction)
+        } else {
+          controllers.transaction.updateTransactionById(this.editId, updatedTransaction)
+        }
       } else {
         // New Transaction
-        controllers.transaction.addTransaction(updatedTransaction)
+        if (this.isImported) {
+          controllers.imported_transaction.addTransaction(updatedTransaction)
+        } else {
+          controllers.transaction.addTransaction(updatedTransaction)
+        }
       }
       if (this.on_cancel) this.on_cancel()
-      this.$store.dispatch('refreshTransactions')
+      if (this.isImported) {
+        this.$store.dispatch('refreshImportedTransactions')
+      } else {
+        this.$store.dispatch('refreshTransactions')
+      }
     }
   },
   computed: {

@@ -25,6 +25,9 @@ methods.addTransaction = (transaction) => {
 methods.deleteTransactionById = (id) => {
   return db.imported_transactions.where('id').equals(id).delete()
 }
+methods.updateTransactionById = (id, update) => {
+  return db.imported_transactions.update(id, update)
+}
 methods.deleteAllTransactions = () => {
   return db.imported_transactions.clear()
 }

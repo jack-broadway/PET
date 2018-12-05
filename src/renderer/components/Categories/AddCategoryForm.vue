@@ -7,6 +7,9 @@
     <b-form-group label="Keywords">
       <b-input id="category_keywords" v-model="add_form.category_keywords"/>
     </b-form-group>
+    <div>
+      <b-form-checkbox v-model="add_form.category_exclude" :value="true">Exclude from calculations</b-form-checkbox>
+    </div>
     <b-button type="submit" variant="primary" class="text-light">Submit</b-button>
     <b-button v-if="on_cancel" @click="on_cancel" variant="secondary" class="ml-3">Cancel</b-button>
   </b-form>
@@ -29,37 +32,35 @@ export default {
     return {
       add_form: {
         category_name: '',
-        category_keywords: ''
+        category_keywords: '',
+        category_exclude: '0'
       }
     }
   },
   methods: {
     addCategory (evt) {
       evt.preventDefault()
+      let updatedCategory = {
+        name: this.add_form.category_name,
+        match_words: this.add_form.category_keywords,
+        exclude: this.add_form.category_exclude
+      }
       if (!this.editId) {
-        console.log('Adding New')
         // Add new category
-        controllers.categories.addCategory({
-          name: this.add_form.category_name,
-          match_words: this.add_form.category_keywords
-        }).then(async () => {
+        controllers.categories.addCategory(updatedCategory).then(async () => {
           await this.$store.dispatch('refreshCategories')
-          this.add_form = {
-            category_name: '',
-            category_keywords: ''
-          }
           if (this.on_cancel) return this.on_cancel()
         })
       } else {
         // Update Existing
-        console.log('Updating Existing')
-        controllers.categories.updateCategoryById(this.editId, {
-          name: this.add_form.category_name,
-          match_words: this.add_form.category_keywords
-        }).then(() => {
+        controllers.categories.updateCategoryById(this.editId, updatedCategory).then(() => {
           this.$store.dispatch('refreshCategories')
           if (this.on_cancel) return this.on_cancel()
         })
+      }
+      this.add_form = {
+        category_name: '',
+        category_keywords: ''
       }
     }
   }

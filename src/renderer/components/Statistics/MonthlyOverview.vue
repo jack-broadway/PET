@@ -114,14 +114,25 @@ export default {
       let totalDebit = 0
 
       let categoryTotals = {}
-      for(let index in this.categories){
-        categoryTotals[this.categories[index].id] = {
-          category: await controllers.categories.getCategoryById(this.categories[index].id),
+      let excludedCategories = []
+
+      // Setup categoryTotals to be empty for each category
+      for(let category of this.categories){
+        categoryTotals[category.id] = {
+          category: await controllers.categories.getCategoryById(category.id),
           debit: 0,
           credit: 0
         }
+        if(category.exclude){
+          excludedCategories.push(category.id)
+        }
       }
+      
       transactions.forEach((transaction) => {
+        // Dont include if excluded category
+        if(excludedCategories.includes(transaction.categoryId)) return
+
+        // Calculate amount and assign to category and global totals
         let amount = parseInt(Math.round(parseFloat((transaction['credit'] || transaction['debit'])) * 100))
         if (amount > 0) {
           totalCredit += amount

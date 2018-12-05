@@ -20,6 +20,7 @@
 
 <style lang='scss'>
   @import 'globals.scss';
+  @import '/static/css/font-awesome.min.css';
   @import '../../node_modules/bootstrap/scss/bootstrap';
   @import '../../node_modules/bootstrap-vue/dist/bootstrap-vue.css';
 </style>

@@ -127,7 +127,7 @@ export default {
           excludedCategories.push(category.id)
         }
       }
-      
+
       transactions.forEach((transaction) => {
         // Dont include if excluded category
         if(excludedCategories.includes(transaction.categoryId)) return
@@ -142,6 +142,8 @@ export default {
           categoryTotals[transaction['categoryId']].debit += amount
         }
       })
+
+      // Update the state
       this.monthly_stats.credit = totalCredit / 100
       this.monthly_stats.debit = totalDebit / 100
       this.monthly_stats.position = (totalCredit + totalDebit) / 100

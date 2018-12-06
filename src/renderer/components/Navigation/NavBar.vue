@@ -60,6 +60,8 @@ export default {
           {name: 'CSV', extensions: ['csv']}
         ]
       })
+      if (csvPath == null) return
+
       this.$store.dispatch('addNotification', { id: 'trans_import', name: 'Importing Transactions' })
       controllers.imported_transaction.importFile(csvPath[0], {
         headers: [
@@ -73,12 +75,15 @@ export default {
       })
     },
     async importData () {
+      // TODO: Clear database on import
       let importDBPath = await this.$electron.remote.dialog.showOpenDialog({
         properties: ['openFile'],
         filters: [
           {name: 'PET Database', extensions: ['petdb']}
         ]
       })
+      if (importDBPath == null) return
+
       fs.readFile(importDBPath[0], async (err, data) => {
         if (err) {
           console.log(err)
@@ -97,6 +102,8 @@ export default {
           extensions: ['petdb']
         }]
       })
+      if (exportSavePath == null) return
+
       this.$store.dispatch('addNotification', { id: 'data_export', name: 'Exporting Data' })
       let dataBlob = await this.$db.export({ prettyJson: true })
       var reader = new FileReader()

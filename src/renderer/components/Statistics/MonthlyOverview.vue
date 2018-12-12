@@ -115,7 +115,6 @@ export default {
 
       let categoryTotals = {}
       let excludedCategories = []
-
       // Setup categoryTotals to be empty for each category
       for(let category of this.categories){
         categoryTotals[category.id] = {
@@ -123,11 +122,10 @@ export default {
           debit: 0,
           credit: 0
         }
-        if(category.exclude){
+        if(category.exclude === true){
           excludedCategories.push(category.id)
         }
       }
-
       transactions.forEach((transaction) => {
         // Dont include if excluded category
         if(excludedCategories.includes(transaction.categoryId)) return

@@ -29,6 +29,12 @@ export default {
   watch: {
     async editId (newVal, oldVal) {
       if (newVal === oldVal) return
+      if (newVal == null) {
+        this.form_data = {
+          account_id: null,
+          account_name: ''
+        }
+      }
       let account = await controllers.account.getAccountById(newVal)
       this.form_data.account_id = account.accountId
       this.form_data.account_name = account.name

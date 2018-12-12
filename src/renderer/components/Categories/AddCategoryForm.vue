@@ -7,7 +7,7 @@
     <b-form-group label="Keywords">
       <b-input id="category_keywords" v-model="add_form.category_keywords"/>
     </b-form-group>
-    <div>
+    <div class="mb-3">
       <b-form-checkbox v-model="add_form.category_exclude" :value="true">Exclude from calculations</b-form-checkbox>
     </div>
     <b-button type="submit" variant="primary" class="text-light">Submit</b-button>
@@ -22,10 +22,17 @@ export default {
   props: ['editId', 'on_cancel'],
   watch: {
     async editId (newVal, oldVal) {
-      if (newVal === oldVal) return
+      if (newVal == null) {
+        this.add_form = {
+          category_name: '',
+          category_keywords: '',
+          category_exclude: '0'
+        }
+      }
       let category = await controllers.categories.getCategoryById(newVal)
       this.add_form.category_name = category.name
       this.add_form.category_keywords = category.match_words
+      this.add_form.category_exclude = category.exclude
     }
   },
   data () {

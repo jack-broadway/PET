@@ -19,6 +19,9 @@ methods.getAllAccounts = async () => {
 methods.updateAccountById = (id, update) => {
   return db.accounts.update(id, update)
 }
+methods.deleteAccountById = (id) => {
+  return db.accounts.where('accountId').equals(id).delete()
+}
 methods.getTransactionStatsForAccount = async (accountId) => {
   let transactions = await db.transactions.where('accountId').equals(accountId).toArray()
 

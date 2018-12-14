@@ -53,24 +53,27 @@ export default {
       evt.preventDefault()
       if (this.editId) {
         // Updating existing
-        return controllers.account.updateAccountById(this.editId, {
+        controllers.account.updateAccountById(this.editId, {
           accountId: this.form_data.account_id,
           name: this.form_data.account_name
-        }).then(() => {
-          this.$store.dispatch('refreshAccountData')
-          this.$store.dispatch('refreshAvailableAccounts')
-          if (this.on_cancel) return this.on_cancel()
         })
       } else {
         // New Transaction
-        return controllers.account.addAccount({
+        controllers.account.addAccount({
           accountId: this.form_data.account_id,
           name: this.form_data.account_name
-        }).then(() => {
-          this.$store.dispatch('refreshAccountData')
-          this.$store.dispatch('refreshAvailableAccounts')
-          if (this.on_cancel) return this.on_cancel()
         })
+      }
+      // Refresh Data
+      this.$store.dispatch('refreshAccountData')
+      this.$store.dispatch('refreshAvailableAccounts')
+      if (this.on_cancel) return this.on_cancel()
+
+      // Reset form
+      this.editId = null
+      this.form_data = {
+        account_id: null,
+        account_name: ''
       }
     }
   },

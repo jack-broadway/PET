@@ -56,19 +56,19 @@ export default {
         // Add new category
         controllers.categories.addCategory(updatedCategory).then(async () => {
           await this.$store.dispatch('refreshCategories')
-          if (this.on_cancel) return this.on_cancel()
         })
       } else {
         // Update Existing
-        controllers.categories.updateCategoryById(this.editId, updatedCategory).then(() => {
-          this.$store.dispatch('refreshCategories')
-          if (this.on_cancel) return this.on_cancel()
+        controllers.categories.updateCategoryById(this.editId, updatedCategory).then(async () => {
+          await this.$store.dispatch('refreshCategories')
         })
       }
+      if (this.on_cancel) return this.on_cancel()
       this.add_form = {
         category_name: '',
         category_keywords: ''
       }
+      this.editId = null
     }
   }
 }

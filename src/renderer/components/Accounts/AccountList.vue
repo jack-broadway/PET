@@ -15,7 +15,7 @@
             </div>
             <div>
               <b-button variant="primary" class="text-light" @click.stop="editButtonClicked(account.accountId)">Edit</b-button>
-              <b-button variant="danger" class="text-light" @click.stop="editButtonClicked(account.accountId)">Delete</b-button>
+              <b-button variant="danger" class="text-light" @click.stop="deleteButtonClicked(account.accountId)">Delete</b-button>
             </div>
           </b-list-group-item>
         </b-list-group>
@@ -28,6 +28,7 @@
 </template>
 <script>
 import AccountForm from './AccountForm'
+import controllers from '../../data/controllers'
 
 export default {
   name: 'pet-account-list',
@@ -59,6 +60,10 @@ export default {
     },
     cancelButtonClicked () {
       this.showEditModal = false
+    },
+    deleteButtonClicked (id) {
+      controllers.account.deleteAccountById(id)
+      this.$store.dispatch('refreshAccountData')
     }
   },
   created () {

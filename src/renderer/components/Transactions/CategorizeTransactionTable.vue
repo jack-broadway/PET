@@ -104,7 +104,7 @@ export default {
       return this.$store.state.ImportedTransactions.imported_transactions
     },
     categories () {
-      return this.$store.state.Categories.categories
+      return this.$store.getters.sortedCategories
     },
     loading_data: {
       set (isRefreshingState) {
@@ -179,6 +179,7 @@ export default {
     },
     categorizeTransactions: async function () {
       console.log('Categorizing Transactions')
+      let defaultCategory = await controllers.categories.getDefaultCategory()
       // Loop through all too be categorized transactions
       transLoop:
       for (let transIndex in this.imported_transactions) {
@@ -200,7 +201,7 @@ export default {
             }
           }
         }
-        this.$set(this.categorized_transactions, currentTransaction.id, this.categories[0].id)
+        this.$set(this.categorized_transactions, currentTransaction.id, defaultCategory.id)
       }
       console.log('Finished Categorizing')
     }

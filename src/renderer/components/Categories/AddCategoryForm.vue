@@ -1,6 +1,7 @@
 <template>
   <b-form @submit="addCategory">
     <!-- Category Name -->
+    {{ add_form }}
     <b-form-group label="Category Name">
       <b-input id="category_name" required v-model="add_form.category_name"/>
     </b-form-group>
@@ -28,11 +29,12 @@ export default {
           category_keywords: '',
           category_exclude: '0'
         }
+      } else {
+        let category = await controllers.categories.getCategoryById(newVal)
+        this.add_form.category_name = category.name
+        this.add_form.category_keywords = category.match_words
+        this.add_form.category_exclude = category.exclude
       }
-      let category = await controllers.categories.getCategoryById(newVal)
-      this.add_form.category_name = category.name
-      this.add_form.category_keywords = category.match_words
-      this.add_form.category_exclude = category.exclude
     }
   },
   data () {
@@ -63,12 +65,12 @@ export default {
           await this.$store.dispatch('refreshCategories')
         })
       }
-      if (this.on_cancel) return this.on_cancel()
       this.add_form = {
         category_name: '',
         category_keywords: ''
       }
-      this.editId = null
+      this.editId = 'updated'
+      if (this.on_cancel) return this.on_cancel()
     }
   }
 }

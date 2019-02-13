@@ -19,8 +19,17 @@ const actions = {
   }
 }
 
+const getters = {
+  sortedCategories: state => {
+    return state.categories.sort((a, b) => {
+      return a.name.localeCompare(b.name)
+    })
+  }
+}
+
 export default {
   state,
   mutations,
-  actions
+  actions,
+  getters
 }

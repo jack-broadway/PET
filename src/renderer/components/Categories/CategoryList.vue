@@ -41,7 +41,7 @@ export default {
   },
   computed: {
     categories () {
-      return this.$store.state.Categories.categories
+      return this.$store.getters.sortedCategories
     }
   },
   methods: {

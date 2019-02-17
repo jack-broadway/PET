@@ -21,7 +21,7 @@ const actions = {
 
 const getters = {
   sortedCategories: state => {
-    return state.categories.sort((a, b) => {
+    return state.categories.concat().sort((a, b) => {
       return a.name.localeCompare(b.name)
     })
   }

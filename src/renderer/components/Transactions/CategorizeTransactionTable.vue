@@ -92,6 +92,7 @@ export default {
       categorized_transactions: {},
       checked_transactions: [],
       allChecked: [],
+      imported_transactions: [],
       showEditModal: false,
       editTransactionId: null,
       currentPage: 0,
@@ -100,19 +101,8 @@ export default {
     }
   },
   computed: {
-    imported_transactions () {
-      return this.$store.state.ImportedTransactions.imported_transactions
-    },
     categories () {
       return this.$store.getters.sortedCategories
-    },
-    loading_data: {
-      set (isRefreshingState) {
-        return this.$store.dispatch('setIsRefreshing', isRefreshingState)
-      },
-      get () {
-        return this.$store.state.ImportedTransactions.isRefreshing
-      }
     }
   },
   methods: {
@@ -206,9 +196,9 @@ export default {
       console.log('Finished Categorizing')
     }
   },
-  created () {
-    this.$store.dispatch('refreshImportedTransactions')
+  async created () {
     this.$store.dispatch('refreshCategories')
+    this.imported_transactions = await controllers.imported_transaction.getAllTransactions()
   }
 }
 </script>

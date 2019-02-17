@@ -46,6 +46,7 @@ export default {
   },
   methods: {
     editButtonClicked (categoryId) {
+      this.editCategoryId = 'temp'
       this.editCategoryId = categoryId
       this.showEditModal = true
     },
@@ -57,6 +58,7 @@ export default {
       this.showEditModal = false
     },
     newButtonClicked () {
+      this.editCategoryId = 'temp'
       this.editCategoryId = null
       this.showEditModal = true
     }

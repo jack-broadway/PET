@@ -11,6 +11,7 @@ import { db } from './data'
 
 // Setup DEXIE
 Vue.prototype.$db = db
+Vue.prototype.$eventBus = new Vue()
 
 // Setup VUE
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))

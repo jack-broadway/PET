@@ -41,6 +41,7 @@
 <script>
 import controllers from '../../data/controllers'
 import fs from 'fs'
+import IDBExportImport from 'indexeddb-export-import'
 
 export default {
   name: 'pet-navbar',
@@ -69,55 +70,56 @@ export default {
         ],
         date_format: 'DD/MM/YYYY'
       }).then(async () => {
-        await this.$store.dispatch('refreshImportedTransactions')
+        this.$eventBus.$emit('new-imported-transactions')
         this.dismissNotification('trans_import')
         this.$store.dispatch('addNotification', { id: 'trans_import_success', name: 'Sucessfully Imported Transactions' })
       })
     },
-    async importData () {
+    importData () {
       // TODO: Clear database on import
-      let importDBPath = await this.$electron.remote.dialog.showOpenDialog({
-        properties: ['openFile'],
-        filters: [
-          {name: 'PET Database', extensions: ['petdb']}
-        ]
-      })
-      if (importDBPath == null) return
+      return new Promise(async (resolve, reject) => {
+        let importDBPath = await this.$electron.remote.dialog.showOpenDialog({
+          properties: ['openFile'],
+          filters: [
+            {name: 'PET Database', extensions: ['petdb']}
+          ]
+        })
+        if (importDBPath == null) return
+        let idbDB = this.$db.backendDB()
 
-      fs.readFile(importDBPath[0], async (err, data) => {
-        if (err) {
-          console.log(err)
-          return
-        }
-        let dbBlob = new Blob([new Uint8Array(data)])
-        await this.$db.import(dbBlob)
-        console.log('Imported Data')
+        fs.readFile(importDBPath[0], (err, data) => {
+          if (err) return reject(err)
+
+          IDBExportImport.importFromJsonString(idbDB, data, (error) => {
+            if (error) return reject(error)
+            return resolve()
+          })
+        })
       })
     },
-    async exportData () {
-      let exportSavePath = this.$electron.remote.dialog.showSaveDialog({
-        defaultPath: 'pet-export.petdb',
-        filters: [{
-          name: `PET Database`,
-          extensions: ['petdb']
-        }]
-      })
-      if (exportSavePath == null) return
-
-      this.$store.dispatch('addNotification', { id: 'data_export', name: 'Exporting Data' })
-      let dataBlob = await this.$db.export({ prettyJson: true })
-      var reader = new FileReader()
-      reader.onload = function () {
-        var buffer = Buffer.from(reader.result)
-        fs.writeFile(exportSavePath, buffer, {}, (err, res) => {
-          if (err) {
-            console.error(err)
-            return
-          }
-          console.log('file saved')
+    exportData () {
+      return new Promise(async (resolve, reject) => {
+        let exportSavePath = await this.$electron.remote.dialog.showSaveDialog({
+          defaultPath: 'pet-export.petdb',
+          filters: [{
+            name: `PET Database`,
+            extensions: ['petdb']
+          }]
         })
-      }
-      reader.readAsArrayBuffer(dataBlob)
+        if (exportSavePath == null) return
+        console.log(exportSavePath)
+        this.$store.dispatch('addNotification', { id: 'data_export', name: 'Exporting Data' })
+
+        let idbDB = this.$db.backendDB()
+        IDBExportImport.exportToJsonString(idbDB, (err, jsonString) => {
+          if (err) return reject(err)
+          fs.writeFile(exportSavePath, jsonString, (error) => {
+            if (error) return reject(error)
+            this.$store.dispatch('addNotification', { id: 'data_export_complete', name: 'Export Complete' })
+            return resolve()
+          })
+        })
+      })
     }
   }
 }

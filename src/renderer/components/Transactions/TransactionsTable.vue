@@ -5,7 +5,7 @@
         <b-pagination v-model="currentPage" :total-rows="transactions.length"/>
       </b-col>
       <b-col sm="auto">
-        <b-form-select :options="[10,15,20,50,100]" v-model="perPage" />
+        <b-form-select :options="[10,15,20,50,100,1000]" v-model="perPage" />
       </b-col>
       <b-col sm="auto">
         <b-form-input v-model="filter" placeholder="Type to Search" />
@@ -49,7 +49,7 @@
         <b-pagination v-model="currentPage" :total-rows="transactions.length"/>
       </b-col>
       <b-col sm="auto">
-        <b-form-select :options="[10,15,20,50,100]" v-model="perPage" />
+        <b-form-select :options="[10,15,20,50,100,1000]" v-model="perPage" />
       </b-col>
     </b-row>
     <b-modal v-model="showEditModal" hide-header hide-footer>

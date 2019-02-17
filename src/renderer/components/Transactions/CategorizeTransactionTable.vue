@@ -5,7 +5,7 @@
         <b-pagination v-model="currentPage" :total-rows="imported_transactions.length"/>
       </b-col>
       <b-col sm="auto">
-        <b-form-select :options="[10,15,20,50,100]" v-model="perPage" />
+        <b-form-select :options="[10,15,20,50,100,1000]" v-model="perPage" />
       </b-col>
       <b-col sm="auto">
         <b-form-input v-model="filter" placeholder="Type to Search" />
@@ -60,7 +60,7 @@
         <b-pagination v-model="currentPage" :total-rows="imported_transactions.length"/>
       </b-col>
       <b-col sm="auto">
-        <b-form-select :options="[10,15,20,50,100]" v-model="perPage" />
+        <b-form-select :options="[10,15,20,50,100,1000]" v-model="perPage" />
       </b-col>
     </b-row>
     <b-modal v-model="showEditModal" hide-header hide-footer>
@@ -126,7 +126,7 @@ export default {
         await controllers.transaction.addTransaction(transactions[index])
       }
       await this.deleteSelectedTransactions()
-      this.$store.dispatch('refreshImportedTransactions')
+      this.refreshImportedTransactions()
       this.$store.dispatch('refreshTransactions')
     },
     async deleteSelectedTransactions () {
@@ -134,8 +134,11 @@ export default {
       for (let transactionId in this.checked_transactions) {
         await controllers.imported_transaction.deleteTransactionById(this.checked_transactions[transactionId])
       }
-      this.$store.dispatch('refreshImportedTransactions')
+      this.refreshImportedTransactions()
       this.checked_transactions = []
+    },
+    async refreshImportedTransactions () {
+      this.imported_transactions = await controllers.imported_transaction.getAllTransactions()
     },
     sortCompare (a, b, key) {
       if (key === 'amount') {
@@ -198,7 +201,12 @@ export default {
   },
   async created () {
     this.$store.dispatch('refreshCategories')
-    this.imported_transactions = await controllers.imported_transaction.getAllTransactions()
+    this.refreshImportedTransactions()
+  },
+  mounted () {
+    this.$eventBus.$on('new-imported-transactions', () => {
+      this.refreshImportedTransactions()
+    })
   }
 }
 </script>

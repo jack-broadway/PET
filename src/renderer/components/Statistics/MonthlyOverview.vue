@@ -109,6 +109,7 @@ export default {
       let startDate = moment([this.selected_year, this.selected_month - 1])
       let endDate = moment(startDate).endOf('month')
 
+      
       let transactions = await controllers.transaction.getTransactionsInRange(startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'))
       let totalCredit = 0
       let totalDebit = 0

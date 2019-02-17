@@ -25,6 +25,14 @@ methods.getAllTransactions = async () => {
 methods.getTransactionsInRange = async (startDate, endDate) => {
   return db.transactions.where('date').between(startDate, endDate, true, true).toArray()
 }
+methods.getTransactionsByCategory = async (categoryId) => {
+  return db.transactions.where('categoryId').equals(categoryId).toArray()
+}
+methods.getTransactionsByCategoryInRange = async (categoryId, startDate, endDate) => {
+  return db.transactions.where('date').between(startDate, endDate, true, true).and((value) => {
+    return value.categoryId === categoryId
+  }).toArray()
+}
 methods.getAccountsFromTransactions = async () => {
   return db.transactions.orderBy('accountId').uniqueKeys()
 }

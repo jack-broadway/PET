@@ -3265,14 +3265,7 @@ devtron@^1.4.0:
     highlight.js "^9.3.0"
     humanize-plus "^1.8.1"
 
-dexie-export-import@^1.0.0-alpha.8:
-  version "1.0.0-alpha.8"
-  resolved "https://registry.yarnpkg.com/dexie-export-import/-/dexie-export-import-1.0.0-alpha.8.tgz#06afabcaf86164803cc3e5151845977ce4715cf7"
-  integrity sha512-cBE2m4v6Oq43jtYhmHsNtRGwrmQfA3uxWPAiD4U87LdrUaZY9WtkhHr7ouGkqmunq+UC5Npy+L2H6NhdcOvf6w==
-  dependencies:
-    dexie "^3.0.0-alpha.5 || ^2.0.4"
-
-dexie@^2.0.4, "dexie@^3.0.0-alpha.5 || ^2.0.4":
+dexie@^2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/dexie/-/dexie-2.0.4.tgz#6027a5e05879424e8f9979d8c14e7420f27e3a11"
   integrity sha512-aQ/s1U2wHxwBKRrt2Z/mwFNHMQWhESerFsMYzE+5P5OsIe5o1kgpFMWkzKTtkvkyyEni6mWr/T4HUJuY9xIHLA==
@@ -5280,6 +5273,14 @@ indent-string@^2.1.0:
   dependencies:
     repeating "^2.0.0"
 
+indexeddb-export-import@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/indexeddb-export-import/-/indexeddb-export-import-1.0.4.tgz#dc0a9aeeac1c73c0452de3952433afe43ed6fe9e"
+  integrity sha512-MyiEJDBf3fTVbpw3RQdTRLEvHeoXMAjcVUSynvb3vUiY2a2fAIpYe8vgCQxo3RPc6DDcN3WLdnl2OAQvaaCnBQ==
+  dependencies:
+    lodash.foreach "^4.5.0"
+    lodash.keys "^4.2.0"
+
 indexes-of@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/indexes-of/-/indexes-of-1.0.1.tgz#f30f716c8e2bd346c7b67d3df3915566a7c05607"
@@ -6326,6 +6327,11 @@ lodash.debounce@^4.0.8:
   resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
   integrity sha1-gteb/zCmfEAF/9XiUVMArZyk168=
 
+lodash.foreach@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.foreach/-/lodash.foreach-4.5.0.tgz#1a6a35eace401280c7f06dddec35165ab27e3e53"
+  integrity sha1-Gmo16s5AEoDH8G3d7DUWWrJ+PlM=
+
 lodash.get@^4.4.2:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
@@ -6368,6 +6374,11 @@ lodash.keys@^3.0.0:
     lodash._getnative "^3.0.0"
     lodash.isarguments "^3.0.0"
     lodash.isarray "^3.0.0"
+
+lodash.keys@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/lodash.keys/-/lodash.keys-4.2.0.tgz#a08602ac12e4fb83f91fc1fb7a360a4d9ba35205"
+  integrity sha1-oIYCrBLk+4P5H8H7ejYKTZujUgU=
 
 lodash.keysin@^3.0.0:
   version "3.0.8"

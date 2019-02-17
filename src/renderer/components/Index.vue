@@ -6,6 +6,7 @@
         <pet-category-list class="mb-3"/>
       </b-col>
       <b-col xl="8">
+        <pet-statistics-categoryyeartodate class="mb-3"/>
         <pet-statistics-monthlyoverview class="mb-3"/>
       </b-col> 
     </b-row>
@@ -15,13 +16,15 @@
 import CategoryList from './Categories/CategoryList.vue'
 import AccountList from './Accounts/AccountList.vue'
 import MonthlyOverview from './Statistics/MonthlyOverview'
+import CategoryYearToDate from './Statistics/CategoryYearToDate.vue'
 
 export default {
   name: 'index',
   components: {
     'pet-account-list': AccountList,
     'pet-category-list': CategoryList,
-    'pet-statistics-monthlyoverview': MonthlyOverview
+    'pet-statistics-monthlyoverview': MonthlyOverview,
+    'pet-statistics-categoryyeartodate': CategoryYearToDate
   }
 }
 </script>
